@@ -192,6 +192,7 @@ void print_usage()
   printf("              --audio_queue n           Size of audio input queue in MB\n");
   printf("              --video_queue n           Size of video input queue in MB\n");
   printf("              --threshold   n           Amount of buffered data required to come out of buffering in seconds\n");
+  printf("              --orientation n           Set orientation of video (0, 90, 180 or 270)\n");
   printf("              --key-config <file>       Uses key bindings specified in <file> instead of the default\n");
 }
 
@@ -571,6 +572,7 @@ int main(int argc, char *argv[])
   float audio_queue_size = 0.0;
   float video_queue_size = 0.0;
   float m_threshold      = 0.1f; // amount of audio/video required to come out of buffering
+  int m_orientation      = -1; // unset
   TV_DISPLAY_STATE_T   tv_state;
 
   const int font_opt        = 0x100;
@@ -591,6 +593,7 @@ int main(int argc, char *argv[])
   const int boost_on_downmix_opt = 0x200;
   const int key_config_opt  = 0x10d;
   const int no_osd_opt = 0x202;
+  const int orientation_opt = 0x204;
 
   struct option longopts[] = {
     { "info",         no_argument,        NULL,          'i' },
@@ -629,6 +632,7 @@ int main(int argc, char *argv[])
     { "boost-on-downmix", no_argument,    NULL,          boost_on_downmix_opt },
     { "key-config",   required_argument,  NULL,          key_config_opt },
     { "no-osd",       no_argument,        NULL,          no_osd_opt },
+    { "orientation",  required_argument,  NULL,          orientation_opt },
     { 0, 0, 0, 0 }
   };
 
@@ -766,6 +770,9 @@ int main(int argc, char *argv[])
         break;
       case threshold_opt:
 	m_threshold = atof(optarg);
+        break;
+      case orientation_opt:
+        m_orientation = atoi(optarg);
         break;
       case 'b':
         m_blank_background = true;
@@ -946,6 +953,8 @@ int main(int argc, char *argv[])
         m_omx_reader.SeekTime(m_seek_pos * 1000.0f, false, &startpts);  // from seconds to DVD_TIME_BASE
   }
   
+  if (m_orientation >= 0)
+    m_hints_video.orientation = m_orientation;
   if(m_has_video && !m_player_video.Open(m_hints_video, m_av_clock, DestRect, m_Deinterlace ? VS_DEINTERLACEMODE_FORCE:m_NoDeinterlace ? VS_DEINTERLACEMODE_OFF:VS_DEINTERLACEMODE_AUTO,
                                          m_hdmi_clock_sync, m_thread_player, m_display_aspect, video_queue_size, video_fifo_size))
     goto do_exit;
