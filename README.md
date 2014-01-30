@@ -36,10 +36,11 @@ path inside the `omxplayer` shell script.
 
 You can also compile it on the PI the native way ;)
 Run this script (which will install packages and update firmware)
-    ./prepare-native-raspbian.sh
+    `./prepare-native-raspbian.sh`
 and build with
-    make ffmpeg
-    make
+    `make ffmpeg`
+    `make`
+    `sudo make install`
 
 Using OMXPlayer
 ---------------
