@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 echo "Patching makefiles..."
 echo "FLOAT=hard
